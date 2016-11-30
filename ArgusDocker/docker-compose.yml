@@ -1,0 +1,48 @@
+version: '2'
+services:
+  opentsdb:
+    image: petergrace/opentsdb-docker:latest
+    hostname: opentsdb
+    container_name: opentsdb
+    ports:
+     - "4242:4242"
+  redis:
+    image: redis:3.2.5
+    hostname: redis
+    container_name: redis
+  postres:
+    image: postgres:9.6.1
+    hostname: postgres
+    container_name: postgres
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword
+  kafka:
+    image: spotify/kafka:latest
+    hostname: kafka
+    container_name: kafka
+    ports:
+     - "2181:2181"
+     - "9092:9092"
+    environment:
+      - ADVERTISED_HOST=kafka
+      - ADVERTISED_PORT=9092
+  openldap:
+    image: osixia/openldap:1.1.7
+    hostname: openldap
+    container_name: openldap
+  argus:
+    build:
+      context: ../
+      dockerfile: ArgusDocker/argusWebServices/Dockerfile
+    hostname: argus
+    container_name: argus
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./argus.properties:/usr/argus/argus.properties:ro
+  argus-web:
+    build:
+      context: ../
+      dockerfile: ArgusDocker/argusWeb/Dockerfile
+    hostname: argus-web
+    container_name: argus-web
