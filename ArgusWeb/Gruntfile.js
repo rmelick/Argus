@@ -42,6 +42,19 @@ module.exports = function(grunt) {
 					src: ['./config/config.js'],
 					dest: './app/js/'
 				}]
+			},
+			docker: {
+				options: {
+					patterns: [{
+						json: grunt.file.readJSON('./config/docker.json')
+					}]
+				},
+				files: [{
+					expand: true,
+					flatten: true,
+					src: ['./config/config.js'],
+					dest: './app/js/'
+				}]
 			}
 		}
 	});

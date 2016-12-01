@@ -6,7 +6,8 @@ RUN npm install -g grunt
 
 COPY ArgusWeb /usr/argus/argusWeb
 WORKDIR /usr/argus/argusWeb
-RUN npm install && bower --allow-root install && grunt
+RUN npm install && bower --allow-root install
+RUN grunt replace:docker && grunt
 
 EXPOSE 8000
 CMD ["npm", "start"]
