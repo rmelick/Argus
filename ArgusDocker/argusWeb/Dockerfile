@@ -1,6 +1,6 @@
 FROM node:7.2.0
 
-RUN apt-get update -y && apt-get install -y telnet net-tools
+RUN apt-get update -y && apt-get install -y telnet net-tools less vim
 RUN npm install -g bower
 RUN npm install -g grunt
 

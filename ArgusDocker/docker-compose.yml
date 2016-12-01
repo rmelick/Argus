@@ -46,11 +46,12 @@ services:
     container_name: argus
     ports:
       - "8081:8080"
+      - "5005:5005"
     volumes:
       - ../ArgusWebServices/target/argus-webservices-2.2.0-SNAPSHOT.war:/usr/local/tomcat/webapps/argus.war:ro
       - ./argus.properties:/usr/argus/argus.properties:ro
     environment:
-      - CATALINA_OPTS="-Dargus.config.public.location=/usr/argus/argus.properties"
+      - "CATALINA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -Dargus.config.public.location=/usr/argus/argus.properties"
   argus-web:
     build:
       context: ../
