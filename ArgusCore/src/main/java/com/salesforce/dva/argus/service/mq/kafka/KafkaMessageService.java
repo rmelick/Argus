@@ -34,9 +34,12 @@ package com.salesforce.dva.argus.service.mq.kafka;
 import com.fasterxml.jackson.databind.JavaType;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.salesforce.dva.argus.inject.SLF4JTypeListener;
 import com.salesforce.dva.argus.service.DefaultService;
 import com.salesforce.dva.argus.service.MQService;
 import com.salesforce.dva.argus.system.SystemConfiguration;
+import org.slf4j.Logger;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +56,8 @@ import static com.salesforce.dva.argus.system.SystemAssert.requireArgument;
 public class KafkaMessageService extends DefaultService implements MQService {
 
     //~ Instance fields ******************************************************************************************************************************
-
+    @SLF4JTypeListener.InjectLogger
+    private Logger _logger;
     private final Producer _producer;
     private final Consumer _consumer;
 
@@ -90,6 +94,7 @@ public class KafkaMessageService extends DefaultService implements MQService {
         requireNotDisposed();
         requireArgument(topic != null && !topic.trim().isEmpty(), "Topic name cannot be null or empty.");
         requireArgument(objects != null, "The list of objects to enqueue cannot be null.");
+        _logger.debug("Sending objects to kafka {} {}", topic, objects);
         _producer.enqueue(topic, objects);
     }
 
@@ -106,14 +111,14 @@ public class KafkaMessageService extends DefaultService implements MQService {
     @Override
     public <T extends Serializable> T dequeue(String topic, Class<T> type, int timeout) {
         List<T> objects = dequeue(topic, type, timeout, 1);
-
+        _logger.debug("Dequeued1 {}", objects);
         return objects.isEmpty() ? null : objects.get(0);
     }
 
     @Override
     public <T extends Serializable> T dequeue(String topic, JavaType type, int timeout) {
         List<T> objects = dequeue(topic, type, timeout, 1);
-
+        _logger.debug("Dequeued2 {}", objects);
         return objects.isEmpty() ? null : objects.get(0);
     }
 

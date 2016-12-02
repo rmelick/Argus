@@ -189,5 +189,15 @@ public class MetricDto extends TSDBEntityDto {
     public void setDatapoints(Map<Long, String> datapoints) {
         this.datapoints = datapoints;
     }
+
+    @Override
+    public String toString() {
+        return "MetricDto{" +
+                "namespace='" + namespace + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", units='" + units + '\'' +
+                ", datapoints=" + datapoints +
+                '}';
+    }
 }
 /* Copyright (c) 2016, Salesforce.com, Inc.  All rights reserved. */

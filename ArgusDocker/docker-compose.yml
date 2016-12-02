@@ -32,18 +32,6 @@ services:
     environment:
       - ADVERTISED_HOST=kafka
       - ADVERTISED_PORT=9092
-  openldap:
-    image: osixia/openldap:1.1.7
-    hostname: openldap
-    container_name: openldap
-  ldap-admin:
-    image: osixia/phpldapadmin:0.6.11
-    hostname: ldap-admin
-    container_name: ldap-admin
-    ports:
-     - "6443:443"
-    environment:
-      - PHPLDAPADMIN_LDAP_HOSTS=openldap
   argus:
     build:
       context: ../
@@ -66,3 +54,19 @@ services:
     container_name: argus-web
     ports:
       - "8082:8000"
+  argus-metrics-client:
+    build:
+      context: ../
+      dockerfile: ArgusDocker/argusClient/Dockerfile
+    hostname: argus-metrics-client
+    container_name: argus-metrics-client
+    ports:
+      - "5006:5006"
+    volumes:
+      - ../ArgusClient/target/argus-client-2.2.0-SNAPSHOT-jar-with-dependencies.jar:/usr/argus/argusClient/argus-client-2.2.0-SNAPSHOT-jar-with-dependencies.jar:ro
+      - ./argus.properties:/usr/argus/argusClient/argus.properties:ro
+    environment:
+      - "EXTRA_JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5006"
+      - "ARGUSCLIENT_CFG=/usr/argus/argusClient/argus.properties"
+      - "ARGUSCLIENT_EXE=/usr/argus/argusClient/argus-client-2.2.0-SNAPSHOT-jar-with-dependencies.jar"
+    command: [COMMIT_METRICS]

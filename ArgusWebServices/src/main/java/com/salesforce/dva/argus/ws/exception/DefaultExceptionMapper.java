@@ -36,6 +36,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Defaults implementation of exception mapper.
@@ -45,10 +47,13 @@ import javax.ws.rs.ext.Provider;
 @Provider
 public class DefaultExceptionMapper implements ExceptionMapper<Throwable> {
 
+    private final Logger _logger = LoggerFactory.getLogger(DefaultExceptionMapper.class);;
+
     //~ Methods **************************************************************************************************************************************
 
     @Override
     public Response toResponse(Throwable ex) {
+        _logger.error("Internal server error", ex);
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()))
             .type(MediaType.APPLICATION_JSON_TYPE).build();
     }

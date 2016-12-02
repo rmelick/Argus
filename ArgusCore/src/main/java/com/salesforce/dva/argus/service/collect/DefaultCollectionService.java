@@ -152,7 +152,7 @@ public class DefaultCollectionService extends DefaultJPAService implements Colle
         }
 
         List<ArrayList<Metric>> batches = _batchMetrics(metrics);
-
+        _logger.debug("Enqueing batches {}", batches);
         _mqService.enqueue(METRIC.getQueueName(), batches);
     }
 

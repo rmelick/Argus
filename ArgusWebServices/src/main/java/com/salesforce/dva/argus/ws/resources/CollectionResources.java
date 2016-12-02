@@ -50,6 +50,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides methods to collect annotation events and metric data.
@@ -59,6 +61,7 @@ import javax.ws.rs.core.MediaType;
 @Path("/collection")
 @Description("Provides methods to collect annotation events and metric data.")
 public class CollectionResources extends AbstractResource {
+    private final Logger _logger = LoggerFactory.getLogger(CollectionResources.class);;
 
     //~ Instance fields ******************************************************************************************************************************
 
@@ -80,6 +83,7 @@ public class CollectionResources extends AbstractResource {
     @Path("/metrics")
     @Description("Submits externally collected metric data.")
     public Map<String, Object> submitMetrics(@Context HttpServletRequest req, final List<MetricDto> metricDtos) {
+        _logger.debug("Received metricDtos {}", metricDtos);
         PrincipalUser remoteUser = getRemoteUser(req);
 
         SystemAssert.requireArgument(metricDtos != null, "Cannot submit null timeseries metrics list.");
@@ -99,6 +103,7 @@ public class CollectionResources extends AbstractResource {
                 errorMessages.add(e.getMessage());
             }
         }
+        _logger.debug("Submitting legal metrics {}", legalMetrics);
         _collectionService.submitMetrics(remoteUser, legalMetrics);
 
         Map<String, Object> result = new HashMap<>();
